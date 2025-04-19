@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { MapPin, MessageCircle, Music, Smile, Settings, Moon, Robot, Users, Info } from "lucide-react";
+import { MapPin, MessageCircle, Music, Smile, Settings, Moon, Bot, Users, Info } from "lucide-react";
 
 const navItems = [
   {
@@ -20,7 +20,7 @@ const navItems = [
   {
     name: "AI Chatbot",
     path: "/chatbot",
-    icon: Robot
+    icon: Bot
   },
   {
     name: "Calming Music",
