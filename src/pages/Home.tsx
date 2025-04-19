@@ -1,11 +1,12 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
-import { MapPin, MessageCircle, Music, Moon } from "lucide-react";
+import { MapPin, MessageCircle, Music, Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatInTimeZone } from "date-fns-tz";
 
 const moodOptions = [
   { value: "great", label: "Great", color: "bg-green-500" },
@@ -17,19 +18,41 @@ const moodOptions = [
 
 export default function Home() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
   
-  const greeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
+  useEffect(() => {
+    // Update time every minute
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+
+    return () => clearInterval(timer);
+  }, []);
+  
+  const getGreeting = () => {
+    const hour = Number(formatInTimeZone(currentTime, 'Asia/Kolkata', 'H'));
+    
+    if (hour >= 5 && hour < 12) {
+      return { text: 'Good Morning 🌞', icon: <Sun className="h-6 w-6 text-amber-500" /> };
+    } else if (hour >= 12 && hour < 17) {
+      return { text: 'Good Afternoon ☀️', icon: <Sun className="h-6 w-6 text-yellow-500" /> };
+    } else if (hour >= 17 && hour < 21) {
+      return { text: 'Good Evening 🌇', icon: <Sun className="h-6 w-6 text-orange-500" /> };
+    } else {
+      return { text: 'Good Night 🌙', icon: <Moon className="h-6 w-6 text-indigo-400" /> };
+    }
   };
+  
+  const greeting = getGreeting();
   
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">{greeting()}</h1>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            {greeting.icon}
+            <h1 className="text-3xl font-bold">{greeting.text}</h1>
+          </div>
           <p className="text-lg text-muted-foreground">How are you feeling today?</p>
         </div>
         
